@@ -258,4 +258,13 @@ const scheduleCron = () => {
     })
 };
 
-scheduleCron();
+// Dummy Server setup for heroku free account use
+import express from 'express';
+const PORT = process.env.PORT || 5000
+
+express()
+    .get('/', (req, res) => res.send({ message: 'done' }))
+    .listen(PORT, () => {
+        console.log(`Listening on ${PORT}`);
+        scheduleCron();
+    });
