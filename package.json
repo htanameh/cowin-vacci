@@ -1,0 +1,25 @@
+{
+  "name": "cowin-vacci",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "clean": "rimraf log",
+    "start": "node index.js",
+    "prod": "NODE_ENV=production && npm-run-all clean start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
+    "moment": "^2.29.1",
+    "node-cron": "^3.0.0",
+    "npm-run-all": "^4.1.5",
+    "pouchdb": "^7.2.2",
+    "rimraf": "^3.0.2",
+    "winston": "^3.3.3"
+  }
+}
