@@ -200,7 +200,7 @@ const fetchSessionsByDistrictId = async (districtId) => {
                 availableCenters.forEach(center => {
                     try {
                         let notificationMessage = templateString
-                            .replace('{{centerName}}', center.name.replace(/-/g, '//-'))
+                            .replace('{{centerName}}', center.name.replace(/-/g, '\\-'))
                             .replace('{{feeType}}', center.fee_type);
                         const sessions = center.sessions.filter(session => availableSessionIds.includes(session.session_id));
                         if (sessions && sessions.length) {
@@ -264,6 +264,7 @@ const PORT = process.env.PORT || 5000
 
 const dummyHerokuPing = async () => {
     try {
+        logger.info('process.env.HEROKU_APP_NAME', process.env.HEROKU_APP_NAME)
         if(process.env.HEROKU_APP_NAME) {
             const url = `http(s)://${HEROKU_APP_NAME}.herokuapp.com`;
             const herokuPingResponse = await axios.get(url);
