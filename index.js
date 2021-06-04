@@ -259,12 +259,26 @@ const scheduleCron = () => {
 };
 
 // Dummy Server setup for heroku free account use
-import express from 'express';
+import express, { response } from 'express';
 const PORT = process.env.PORT || 5000
 
+const dummyHerokuPing = () => {
+    try {
+        if(process.env.HEROKU_APP_NAME) {
+            const url = `http(s)://${HEROKU_APP_NAME}.herokuapp.com`;
+            const herokuPingResponse = await axios.get(url);
+            logger.info('Ping done');
+            logger.info(herokuPingResponse.data);
+        }
+    } catch (err) {
+        logger.error('Error in heroku ping');
+        logger.error(err.toString());
+    }
+}
 express()
     .get('/', (req, res) => res.send({ message: 'done' }))
     .listen(PORT, () => {
         console.log(`Listening on ${PORT}`);
         scheduleCron();
+        dummyHerokuPing()
     });
