@@ -264,13 +264,15 @@ const PORT = process.env.PORT || 5000
 
 const dummyHerokuPing = async () => {
     try {
-        logger.info('process.env.HEROKU_APP_NAME', process.env.HEROKU_APP_NAME)
+        logger.info('process.env.HEROKU_APP_NAME');
+        logger.info(process.env.HEROKU_APP_NAME);
+        let url = `https://guarded-thicket-80071.herokuapp.com/`;
         if(process.env.HEROKU_APP_NAME) {
-            const url = `http(s)://${HEROKU_APP_NAME}.herokuapp.com`;
-            const herokuPingResponse = await axios.get(url);
-            logger.info('Ping done');
-            logger.info(herokuPingResponse.data);
+            url = `https://${process.env.HEROKU_APP_NAME}.herokuapp.com/`;
         }
+        const herokuPingResponse = await axios.get(url);
+        logger.info('Ping done');
+        logger.info(herokuPingResponse.data);
     } catch (err) {
         logger.error('Error in heroku ping');
         logger.error(err.toString());
