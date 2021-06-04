@@ -200,7 +200,7 @@ const fetchSessionsByDistrictId = async (districtId) => {
                 availableCenters.forEach(center => {
                     try {
                         let notificationMessage = templateString
-                            .replace('{{centerName}}', center.name)
+                            .replace('{{centerName}}', center.name.replace(/-/g, '//-'))
                             .replace('{{feeType}}', center.fee_type);
                         const sessions = center.sessions.filter(session => availableSessionIds.includes(session.session_id));
                         if (sessions && sessions.length) {
