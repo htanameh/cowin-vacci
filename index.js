@@ -262,7 +262,7 @@ const scheduleCron = () => {
 import express, { response } from 'express';
 const PORT = process.env.PORT || 5000
 
-const dummyHerokuPing = () => {
+const dummyHerokuPing = async () => {
     try {
         if(process.env.HEROKU_APP_NAME) {
             const url = `http(s)://${HEROKU_APP_NAME}.herokuapp.com`;
