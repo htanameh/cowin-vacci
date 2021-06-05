@@ -148,7 +148,8 @@ const fetchSessionsByDistrictId = async (districtId) => {
         const centers = response.data.centers;
         const templateString =
             `Below details found
-            \*Names\*: {{centerName}}
+            \*Name\*: {{centerName}}
+            \*District\*: {{districtName}}
             \*Fee Type\*: {{feeType}}
             \*Vaccine\*: {{vaccineName}}
             \*Fees\*: {{fees}} rs
@@ -201,7 +202,8 @@ const fetchSessionsByDistrictId = async (districtId) => {
                     try {
                         let notificationMessage = templateString
                             .replace('{{centerName}}', center.name.replace(/-/g, '\\-'))
-                            .replace('{{feeType}}', center.fee_type);
+                            .replace('{{feeType}}', center.fee_type)
+                            .replace(`{{districtName}}`, center.district_name);
                         const sessions = center.sessions.filter(session => availableSessionIds.includes(session.session_id));
                         if (sessions && sessions.length) {
                             sessions.forEach(async session => {
@@ -255,6 +257,7 @@ const scheduleCron = () => {
     cron.schedule('*/2 * * * *', () => {
         logger.info('Cron running')
         startSearch();
+        dummyHerokuPing();
     })
 };
 
@@ -283,5 +286,4 @@ express()
     .listen(PORT, () => {
         console.log(`Listening on ${PORT}`);
         scheduleCron();
-        dummyHerokuPing()
     });
