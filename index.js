@@ -170,8 +170,7 @@ const fetchSessionsByDistrictId = async (districtId) => {
             \*Dose 1\*: {{dose1}} slots
             \*Dose 2\*: {{dose2}} slots
         \\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-
-            Click https://selfregistration.cowin.gov.in/ to login and schedule: 
-            \\(notification count for this session: {{notiCount}} \\)
+            https://selfregistration\\.cowin\\.gov\\.in/
         `;
         if (centers && centers.length) {
             // keeping track of available sessions
@@ -307,8 +306,9 @@ express()
     .get('/', (req, res) => res.send({ message: 'done' }))
     .listen(PORT, () => {
         console.log(`Listening on ${PORT}`);
-        scheduleCron();
-        if (process.env.NODE_ENV === 'production') {
-            scheduleHerokuPing();
-        }
+        // scheduleCron();
+        // if (process.env.NODE_ENV === 'production') {
+        //     scheduleHerokuPing();
+        // }
+        startSearch();
     });
