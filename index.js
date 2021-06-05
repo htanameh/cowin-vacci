@@ -150,6 +150,7 @@ const fetchSessionsByDistrictId = async (districtId) => {
             `Below details found
             \*Name\*: {{centerName}}
             \*District\*: {{districtName}}
+            \*Pincode\*: {{pincode}}
             \*Fee Type\*: {{feeType}}
             \*Vaccine\*: {{vaccineName}}
             \*Fees\*: {{fees}} rs
@@ -203,7 +204,8 @@ const fetchSessionsByDistrictId = async (districtId) => {
                         let notificationMessage = templateString
                             .replace('{{centerName}}', center.name.replace(/-/g, '\\-'))
                             .replace('{{feeType}}', center.fee_type)
-                            .replace(`{{districtName}}`, center.district_name);
+                            .replace(`{{districtName}}`, center.district_name)
+                            .replace(`{{pincode}}`, center.pincode);
                         const sessions = center.sessions.filter(session => availableSessionIds.includes(session.session_id));
                         if (sessions && sessions.length) {
                             sessions.forEach(async session => {
@@ -257,8 +259,7 @@ const scheduleCron = () => {
     cron.schedule('*/2 * * * *', () => {
         logger.info('Cron running')
         startSearch();
-        dummyHerokuPing();
-    })
+    });
 };
 
 // Dummy Server setup for heroku free account use
@@ -275,15 +276,28 @@ const dummyHerokuPing = async () => {
         }
         const herokuPingResponse = await axios.get(url);
         logger.info('Ping done');
-        logger.info(herokuPingResponse.data);
+        logger.info(JSON.stringify(herokuPingResponse.data));
     } catch (err) {
         logger.error('Error in heroku ping');
         logger.error(err.toString());
     }
 }
+
+const scheduleHerokuPing = () => {
+    logger.info('Cron Scheduled - Heroku');
+    // cron running every 5 minutes
+    cron.schedule('*/5 * * * *', () => {
+        logger.info('Heroku Cron running')
+        dummyHerokuPing();
+    });
+};
+
 express()
     .get('/', (req, res) => res.send({ message: 'done' }))
     .listen(PORT, () => {
         console.log(`Listening on ${PORT}`);
         scheduleCron();
+        if (process.env.NODE_ENV === 'production') {
+            scheduleHerokuPing();
+        }
     });
