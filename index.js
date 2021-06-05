@@ -59,7 +59,7 @@ const constructTelegramSendMessageURL = (botToken) => {
     return `${DEFAULT_TELEGRAM_API_BASE_URL}/bot${botToken}/sendMessage`;
 };
 
-const sendTelegramNotification = async (message, session) => {
+const sendTelegramNotification = async (message, session, pincode) => {
     try {
         const chatID = process.env.TELEGRAM_CHAT_ID;
         const botToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -67,12 +67,23 @@ const sendTelegramNotification = async (message, session) => {
             logger.info('Telegram env config not found');
             return;
         }
-        const telegramUrl = constructTelegramSendMessageURL(botToken, chatID, 'Dummy');
+        const telegramUrl = constructTelegramSendMessageURL(botToken);
         await axios.post(telegramUrl, {
             chat_id: chatID,
             text: message,
             parse_mode: 'MarkdownV2',
         });
+        // Pincodes near ambattur
+        const specailAlertPincode = ['600095', '600053', '600037', '600101', '600049', '600050', '600071', '600057', '600054', '600077'];
+        if (specailAlertPincode.includes(`${pincode}`)) {
+            logger.info('Special Alert Triggered');
+            const specialChatId = process.env.SP_TELEGRAM_CHAT_ID;
+            await axios.post(telegramUrl, {
+                chat_id: specialChatId,
+                text: message,
+                parse_mode: 'MarkdownV2',
+            });
+        }
         await updateSessionToDB(session);
     } catch (err) {
         logger.error(`Error in sendTelegramNotification`);
@@ -222,7 +233,7 @@ const fetchSessionsByDistrictId = async (districtId) => {
                                         .replace('{{notiCount}}', sessionInDB ? sessionInDB.notification_count : 1);
                                     const isSessionNotified = checkIfSessionIsNotified(sessionInDB);
                                     if (!isSessionNotified) {
-                                        sendTelegramNotification(notificationMessage, session);
+                                        sendTelegramNotification(notificationMessage, session, center.pincode);
                                     }
                                 } catch (err) {
                                     logger.error(`Error in fetchSessionsByDistrictId --> availableCenters --> sessions -->  filter`);
