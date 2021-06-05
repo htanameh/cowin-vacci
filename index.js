@@ -306,9 +306,8 @@ express()
     .get('/', (req, res) => res.send({ message: 'done' }))
     .listen(PORT, () => {
         console.log(`Listening on ${PORT}`);
-        // scheduleCron();
-        // if (process.env.NODE_ENV === 'production') {
-        //     scheduleHerokuPing();
-        // }
-        startSearch();
+        scheduleCron();
+        if (process.env.NODE_ENV === 'production') {
+            scheduleHerokuPing();
+        }
     });
