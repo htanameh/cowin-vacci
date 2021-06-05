@@ -170,7 +170,7 @@ const fetchSessionsByDistrictId = async (districtId) => {
             \*Dose 1\*: {{dose1}} slots
             \*Dose 2\*: {{dose2}} slots
         \\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-
-            Click [here](https://selfregistration.cowin.gov.in/) to login and schedule: 
+            Click https://selfregistration.cowin.gov.in/ to login and schedule: 
             \\(notification count for this session: {{notiCount}} \\)
         `;
         if (centers && centers.length) {
