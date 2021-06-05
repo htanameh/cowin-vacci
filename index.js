@@ -157,20 +157,18 @@ const fetchSessionsByDistrictId = async (districtId) => {
         const url = constructFetchSessionsByDistrictURL(districtId, dateToday);
         const response = await axios.get(url, { headers: { ...DEFAULT_PUBLIC_API_HEADER } });
         const centers = response.data.centers;
-        const templateString =
-            `Below details found
-            \*Name\*: {{centerName}}
-            \*District\*: {{districtName}}
-            \*Pincode\*: {{pincode}}
-            \*Fee Type\*: {{feeType}}
-            \*Vaccine\*: {{vaccineName}}
-            \*Fees\*: {{fees}} rs
-            \*Date\*: {{availableDate}}
-            \*Age\*: {{age}}
-            \*Dose 1\*: {{dose1}} slots
-            \*Dose 2\*: {{dose2}} slots
-        \\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-
-            https://selfregistration\\.cowin\\.gov\\.in/
+        const templateString =`\*District\*: {{districtName}}
+\*Pincode\*: {{pincode}}
+\*Name\*: {{centerName}}
+\*Fee Type\*: {{feeType}}
+\*Vaccine\*: {{vaccineName}}
+\*Fees\*: {{fees}} rs
+\*Date\*: {{availableDate}}
+\*Age\*: {{age}}
+\*Dose 1\*: {{dose1}} slots
+\*Dose 2\*: {{dose2}} slots
+
+https://selfregistration\\.cowin\\.gov\\.in/
         `;
         if (centers && centers.length) {
             // keeping track of available sessions
@@ -186,7 +184,7 @@ const fetchSessionsByDistrictId = async (districtId) => {
                                 const dose2 = session.available_capacity_dose2;
                                 const ageLimit = session.min_age_limit;
                                 // Right now only checking if dose 1 is available for age limit 18
-                                if (totalAvailableCapacity && dose1 && ageLimit === 18) {
+                                if (totalAvailableCapacity && dose1 >= 2 && ageLimit === 18) {
                                     availableSessionIds.push(session.session_id);
                                     return true;
                                 }
@@ -225,7 +223,7 @@ const fetchSessionsByDistrictId = async (districtId) => {
                                     notificationMessage = notificationMessage
                                         .replace('{{vaccineName}}', session.vaccine)
                                         .replace('{{fees}}', vaccineFee ? vaccineFee.fee : 'NA')
-                                        .replace('{{availableDate}}', session.date.replace(/-/g, '/'))
+                                        .replace('{{availableDate}}', session.date.replace(/-/g, '\\-'))
                                         .replace('{{age}}', session.min_age_limit)
                                         .replace('{{dose1}}', session.available_capacity_dose1)
                                         .replace('{{dose2}}', session.available_capacity_dose2)
@@ -305,9 +303,12 @@ const scheduleHerokuPing = () => {
 express()
     .get('/', (req, res) => res.send({ message: 'done' }))
     .listen(PORT, () => {
-        console.log(`Listening on ${PORT}`);
-        scheduleCron();
+        logger.info(`Listening on ${PORT}`);
         if (process.env.NODE_ENV === 'production') {
+            scheduleCron();
             scheduleHerokuPing();
+        } else {
+            logger.info(`Search`);
+            startSearch();
         }
     });
