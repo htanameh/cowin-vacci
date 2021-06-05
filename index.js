@@ -135,7 +135,7 @@ const checkIfSessionIsNotified = (session) => {
     try {
         if (session) {
             const lastNotifiedDate = moment(session.notification_date_time);
-            if (lastNotifiedDate.isValid() && moment().diff(lastNotifiedDate, 'minutes') < 30) {
+            if (lastNotifiedDate.isValid() && moment().diff(lastNotifiedDate, 'minutes') < 5) {
                 return true;
             }
         }
