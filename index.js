@@ -135,7 +135,7 @@ const checkIfSessionIsNotified = (session) => {
     try {
         if (session) {
             const lastNotifiedDate = moment(session.notification_date_time);
-            if (lastNotifiedDate.isValid() && moment().diff(lastNotifiedDate, 'minutes') < 5) {
+            if (lastNotifiedDate.isValid() && moment().diff(lastNotifiedDate, 'minutes') < 60) {
                 return true;
             }
         }
@@ -164,7 +164,7 @@ const fetchSessionsByDistrictId = async (districtId) => {
 \*Vaccine\*: {{vaccineName}}
 \*Fees\*: {{fees}} rs
 \*Date\*: {{availableDate}}
-\*Age\*: {{age}}
+\*Age\*: {{age}}\\+
 \*Dose 1\*: {{dose1}} slots
 \*Dose 2\*: {{dose2}} slots
 
@@ -183,8 +183,7 @@ https://selfregistration\\.cowin\\.gov\\.in/
                                 const dose1 = session.available_capacity_dose1;
                                 const dose2 = session.available_capacity_dose2;
                                 const ageLimit = session.min_age_limit;
-                                // Right now only checking if dose 1 is available for age limit 18
-                                if (totalAvailableCapacity && dose1 >= 2 && ageLimit === 18) {
+                                if (totalAvailableCapacity && dose1 >= 2 && dose2 >= 2) {
                                     availableSessionIds.push(session.session_id);
                                     return true;
                                 }
