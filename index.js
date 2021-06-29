@@ -32,12 +32,16 @@ const DEFAULT_API_URL_BASE = "https://cdn-api.co-vin.in";
 const DEFAULT_TELEGRAM_API_BASE_URL = "https://api.telegram.org";
 
 
+const sleep = async (ms) => {
+    return new Promise((resolve) => setTimeout(() => resolve(ms), ms));
+};
+
 const fetchStateId = () => {
     return '31'; // State ID for TamilNadu --> Refer https://cdn-api.co-vin.in/api/v2/admin/location/states
 }
 
 const fetchDistrictIds = () => {
-    return ['571', '572']; // District ID for Chennai and Tiruvallur --> Refer https://cdn-api.co-vin.in/api/v2/admin/location/districts/31
+    return ['572', '571']; // District ID for Chennai and Tiruvallur --> Refer https://cdn-api.co-vin.in/api/v2/admin/location/districts/31
 };
 
 /**
@@ -60,6 +64,7 @@ const constructTelegramSendMessageURL = (botToken) => {
 };
 
 const sendTelegramNotification = async (message, session, pincode) => {
+    logger.info('sendTelegramNotification');
     try {
         const chatID = process.env.TELEGRAM_CHAT_ID;
         const botToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -206,16 +211,18 @@ https://selfregistration\\.cowin\\.gov\\.in/
                 }
             });
             if (availableCenters && availableCenters.length) {
-                availableCenters.forEach(center => {
+                for (let i in availableCenters) {
+                    const center = availableCenters[i];
                     try {
                         let notificationMessage = templateString
-                            .replace('{{centerName}}', center.name.replace(/-/g, '\\-'))
+                            .replace('{{centerName}}', center.name.replace(/-/g, '\\-').replace(/\./g, '\\.'))
                             .replace('{{feeType}}', center.fee_type)
                             .replace(`{{districtName}}`, center.district_name)
                             .replace(`{{pincode}}`, center.pincode);
                         const sessions = center.sessions.filter(session => availableSessionIds.includes(session.session_id));
                         if (sessions && sessions.length) {
-                            sessions.forEach(async session => {
+                            for (let j in sessions) {
+                                const session = sessions[j];
                                 try {
                                     const vaccineFee = center.vaccine_fees.find(v => v.vaccine === session.vaccine);
                                     const sessionInDB = await getSessionFromDB(session.session_id);
@@ -229,6 +236,7 @@ https://selfregistration\\.cowin\\.gov\\.in/
                                         .replace('{{notiCount}}', sessionInDB ? sessionInDB.notification_count : 1);
                                     const isSessionNotified = checkIfSessionIsNotified(sessionInDB);
                                     if (!isSessionNotified) {
+                                        await sleep(10000);
                                         sendTelegramNotification(notificationMessage, session, center.pincode);
                                     }
                                 } catch (err) {
@@ -236,14 +244,14 @@ https://selfregistration\\.cowin\\.gov\\.in/
                                     logger.error(err.toString());
                                     return false;
                                 }
-                            });
+                            }
                         }
                     } catch (err) {
                         logger.error(`Error in fetchSessionsByDistrictId --> availableCenters -->  filter`);
                         logger.error(err.toString());
                         return false;
                     }
-                })
+                }
             }
         }
     } catch (error) {
@@ -253,11 +261,11 @@ https://selfregistration\\.cowin\\.gov\\.in/
 };
 
 
-const startSearch = () => {
+const startSearch = async () => {
     const districts = fetchDistrictIds();
-    districts.forEach(districtId => {
-        fetchSessionsByDistrictId(districtId);
-    });
+    for (let districtId of districts) {
+        await fetchSessionsByDistrictId(districtId);
+    }
 };
 
 const scheduleCron = () => {
