@@ -76,6 +76,11 @@ fs.createReadStream(path.resolve('up_ref', './names.csv'))
 	.pipe(csv())
 	.on('data', (data) => {
         try {
+            if(typeof String.prototype.replaceAll == "undefined") {
+                String.prototype.replaceAll = function(match, replace){
+                   return this.replace(new RegExp(match, 'g'), () => replace);
+                }
+            }            
             results.push(
                 data.name
                     .replaceAll(' ', '')
