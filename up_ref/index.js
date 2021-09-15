@@ -4,6 +4,7 @@ import { uniqueNamesGenerator, NumberDictionary } from 'unique-names-generator';
 import csv from 'csv-parser';
 import fs from 'fs';
 import logger from '../logger.js';
+import path from 'path';
 
 const upRef = async (name, email, mobile, refID) => {
 	var data = new FormData();
@@ -71,7 +72,7 @@ const sleep = (seconds) => {
 
 const results = [];
 
-fs.createReadStream(__dirname + '/up_ref/names.csv')
+fs.createReadStream(path.resolve('up_ref', './names.csv'))
 	.pipe(csv())
 	.on('data', (data) => {
 		results.push(
