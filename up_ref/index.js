@@ -107,7 +107,9 @@ export const addReferral = (refID) => {
     const name = email.split('@')[0];
     const baseFour = baseSeriesArr[getRandomInt(0, 1)] + getRandomInt(100, 999);
     const number = baseFour + '' + getRandomInt(100000, 999999)
-    logger.info(name, email, number, refID);
+    logger.info(name)
+    logger.info(email)
+    logger.info(number)
     upRef(name, email, number, refID);
 };
 
