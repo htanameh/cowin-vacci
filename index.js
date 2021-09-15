@@ -310,7 +310,7 @@ const scheduleHerokuPing = () => {
 
 const scheduleCrons = () => {
     logger.info('Cron Scheduled');
-    const count = 0;
+    let count = 0;
     // cron running every 4 minutes
     cron.schedule('*/4 * * * *', () => {
         if (count <=  500) {
