@@ -90,6 +90,7 @@ fs.createReadStream(path.resolve('up_ref', './names.csv'))
 	})
 	.on('end', () => {
 		logger.info('CSV READ');
+        logger.info(results[30]);
 	});
 
 export const addReferral = (refID) => {
