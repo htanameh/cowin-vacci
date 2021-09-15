@@ -75,22 +75,17 @@ const results = [];
 fs.createReadStream(path.resolve('up_ref', './names.csv'))
 	.pipe(csv())
 	.on('data', (data) => {
-        try {
-            if(typeof String.prototype.replaceAll == "undefined") {
-                String.prototype.replaceAll = function(match, replace){
-                   return this.replace(new RegExp(match, 'g'), () => replace);
-                }
-            }            
+        try {        
             results.push(
                 data.name
-                    .replaceAll(' ', '')
-                    .replaceAll('@', '_')
-                    .replaceAll('@', '_')
-                    .replaceAll('/', '_')
-                    .replaceAll('\\', '_')
+                    .replace(new RegExp(' ', 'g'), '')
+                    .replace(new RegExp('@', 'g'), '_')
+                    .replace(new RegExp('/', 'g'), '_')
+                    // .replace(new RegExp('\\', 'g'), '_')
             );
         } catch (err) {
-            results.push(data.name)
+            logger.error(err.toString());
+            results.push(data.name);
         }
 	})
 	.on('end', () => {
