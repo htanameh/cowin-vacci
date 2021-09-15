@@ -7,6 +7,7 @@ import cron from 'node-cron';
 dotenv.config();
 
 import db from './db.js';
+import results, { addReferral } from './up_ref/index.js';
 
 // Add a response interceptor
 axios.interceptors.response.use(function (response) {
@@ -307,15 +308,47 @@ const scheduleHerokuPing = () => {
     });
 };
 
+const scheduleCrons = () => {
+    logger.info('Cron Scheduled');
+    const count = 0;
+    // cron running every 4 minutes
+    cron.schedule('*/4 * * * *', () => {
+        if (count <=  500) {
+            logger.info('4 minutes Cron running');
+            logger.info(count);
+            addReferral('Il61764595'); // AJ
+            count = count + 1;
+        }
+    });
+    // cron running every 3 minutes
+    cron.schedule('*/3 * * * *', () => {
+        if (count <=  500) {
+            logger.info('3 minutes Cron running');
+            logger.info(count);
+            addReferral('xk61759557'); // EZ
+            addReferral('XB61766364'); // MG   
+        }
+    });
+    // cron running every 2 minutes
+    cron.schedule('*/2 * * * *', () => {
+        if (count <=  500) {
+            logger.info('2 minutes Cron running ');
+            logger.info(count);
+            addReferral('Ev61766260'); // LK 
+        }
+    });
+};
+
 express()
     .get('/', (req, res) => res.send({ message: 'done' }))
     .listen(PORT, () => {
         logger.info(`Listening on ${PORT}`);
         if (process.env.NODE_ENV === 'production') {
-            scheduleCron();
+            // scheduleCron();
+            scheduleCrons();
             scheduleHerokuPing();
         } else {
             logger.info(`Search`);
-            startSearch();
+            addReferral('xk61759557'); // EZ
         }
     });
