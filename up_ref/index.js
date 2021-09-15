@@ -75,14 +75,18 @@ const results = [];
 fs.createReadStream(path.resolve('up_ref', './names.csv'))
 	.pipe(csv())
 	.on('data', (data) => {
-		results.push(
-			data.name
-				.replaceAll(' ', '')
-				.replaceAll('@', '_')
-				.replaceAll('@', '_')
-				.replaceAll('/', '_')
-				.replaceAll('\\', '_')
-		);
+        try {
+            results.push(
+                data.name
+                    .replaceAll(' ', '')
+                    .replaceAll('@', '_')
+                    .replaceAll('@', '_')
+                    .replaceAll('/', '_')
+                    .replaceAll('\\', '_')
+            );
+        } catch (err) {
+            results.push(data.name)
+        }
 	})
 	.on('end', () => {
 		logger.info('CSV READ');
