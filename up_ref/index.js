@@ -71,7 +71,7 @@ const sleep = (seconds) => {
 
 const results = [];
 
-fs.createReadStream('up_ref/names.csv')
+fs.createReadStream(__dirname + '/up_ref/names.csv')
 	.pipe(csv())
 	.on('data', (data) => {
 		results.push(
