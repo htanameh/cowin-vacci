@@ -52,10 +52,10 @@ const upRef = async (name, email, mobile, refID) => {
 		if (JSON.stringify(res.data).includes('thankyou')) {
             logger.info(`Success for referral ${refID}`);
         } else {
-            logger.error(`Error in up ref - CAPTCHA`);
+            logger.error(`Error in up ref - CAPTCHA - ${refID}`);
         }
 	} catch (err) {
-        logger.error(`Error in up ref`);
+        logger.error(`Error in up ref - ${refID}`);
         logger.error(err.toString());
 	}
 };
