@@ -311,27 +311,27 @@ const scheduleHerokuPing = () => {
 const scheduleCrons = () => {
     logger.info('Cron Scheduled');
     let count = 0;
-    // cron running every 5 minutes
-    cron.schedule('*/5 * * * *', () => {
+    // cron running every 10 minutes
+    cron.schedule('*/10 * * * *', () => {
         if (count <=  350) {
-            logger.info('4 minutes Cron running');
+            logger.info('10 minutes Cron running');
             logger.info(count);
             addReferral('Il61764595'); // AJ
         }
     });
-    // cron running every 4 minutes
-    cron.schedule('*/4 * * * *', () => {
+    // cron running every 15 minutes
+    cron.schedule('*/15 * * * *', () => {
         if (count <=  350) {
-            logger.info('3 minutes Cron running');
+            logger.info('15 minutes Cron running');
             logger.info(count);
             addReferral('xk61759557'); // EZ
             addReferral('XB61766364'); // MG   
         }
     });
-    // cron running every 10 minutes
-    cron.schedule('*/10 * * * *', () => {
+    // cron running every 20 minutes
+    cron.schedule('*/20 * * * *', () => {
         if (count <=  350) {
-            logger.info('2 minutes Cron running ');
+            logger.info('20 minutes Cron running ');
             logger.info(count);
             addReferral('Ev61766260'); // LK
             count = count + 1;
